@@ -17,5 +17,6 @@ export const M2RepositoryPath = "~/.m2/repository"
 export const GradlePath = "~/.gradle"
 export const GradleRepositoryPath = "~/.gradle/caches"
 export const GradleWrapperPath = "~/.gradle/wrapper"
+export const GradleWrapperPropertiesPathSuffix = "/gradle/wrapper/gradle-wrapper.properties"
 
-export const GradleWrapperPropertiesPath = "./gradle/wrapper/gradle-wrapper.properties"
+export const INPUT_PROJECT_ROOT = 'project-root';

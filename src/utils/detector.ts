@@ -5,7 +5,7 @@ import * as path from 'path'
 
 import * as core from "@actions/core";
 
-import { M2Path, M2RepositoryPath, GradleRepositoryPath, GradleWrapperPath, GradleWrapperPropertiesPath, NpmPath } from "./constants";
+import { M2Path, M2RepositoryPath, GradleRepositoryPath, GradleWrapperPath, GradleWrapperPropertiesPathSuffix, NpmPath } from "./constants";
 
 import * as utils from "./actionUtils";
 import * as maven from "./maven";

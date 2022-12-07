@@ -1,6 +1,9 @@
 name: 'Tidy cache'
 description: 'Remove unused dependencies from build caches'
 author: 'Thomas Skjølberg'
+inputs:
+  project-root:
+    description: 'Only supported for Gradle - the project root of the gradle wrapper (gradlew)'
 runs:
   using: 'node12'
   main: 'dist/restore/index.js'

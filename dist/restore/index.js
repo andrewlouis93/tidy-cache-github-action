@@ -2415,6 +2415,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.performCleanup = exports.prepareCleanup = void 0;
 const fs = __importStar(__webpack_require__(747));
 const os = __importStar(__webpack_require__(87));
+const constants = __importStar(__webpack_require__(558));
 const core = __importStar(__webpack_require__(470));
 const constants_1 = __webpack_require__(558);
 const utils = __importStar(__webpack_require__(443));
@@ -2447,9 +2448,11 @@ exports.prepareCleanup = prepareCleanup;
 function performCleanup() {
     return __awaiter(this, void 0, void 0, function* () {
         var timestamp = core.getState("gradle-timestamp");
+        const projectRoot = core.getInput(constants.INPUT_PROJECT_ROOT) || "." + "/";
+        const gradlePropertiesPath = `${projectRoot}${constants_1.GradleWrapperPropertiesPathSuffix}`;
         try {
             // read contents of the file
-            const data = fs.readFileSync(constants_1.GradleWrapperPropertiesPath, 'UTF-8');
+            const data = fs.readFileSync(gradlePropertiesPath, 'UTF-8');
             // split the contents by new line
             const lines = data.split(/\r?\n/);
             var gradleVersion;
@@ -2488,7 +2491,7 @@ function performCleanup() {
                 }
                 if (classpath) {
                     console.log("Found classpath " + classpath);
-                    const stop = yield utils.runCommand("./gradlew", ["--stop"]);
+                    const stop = yield utils.runCommand(`${projectRoot}/gradlew`, ["--stop"]);
                     const gradleDirectory = ensureGradleDirectoryExists();
                     const path = gradleDirectory + "/cleaner-1.0.0.jar";
                     const showOutput = yield utils.runJavaCommand(["-cp", path + ":" + classpath + "/*", "com.github.skjolber.gradle.Runner", timestamp]);
@@ -4332,7 +4335,7 @@ exports.performCleanup = performCleanup;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GradleWrapperPropertiesPath = exports.GradleWrapperPath = exports.GradleRepositoryPath = exports.GradlePath = exports.M2RepositoryPath = exports.M2Path = exports.NpmPath = exports.SocketTimeout = exports.DefaultRetryDelay = exports.DefaultRetryAttempts = void 0;
+exports.INPUT_PROJECT_ROOT = exports.GradleWrapperPropertiesPathSuffix = exports.GradleWrapperPath = exports.GradleRepositoryPath = exports.GradlePath = exports.M2RepositoryPath = exports.M2Path = exports.NpmPath = exports.SocketTimeout = exports.DefaultRetryDelay = exports.DefaultRetryAttempts = void 0;
 // The default number of retry attempts.
 exports.DefaultRetryAttempts = 2;
 // The default delay in milliseconds between retry attempts.
@@ -4347,7 +4350,8 @@ exports.M2RepositoryPath = "~/.m2/repository";
 exports.GradlePath = "~/.gradle";
 exports.GradleRepositoryPath = "~/.gradle/caches";
 exports.GradleWrapperPath = "~/.gradle/wrapper";
-exports.GradleWrapperPropertiesPath = "./gradle/wrapper/gradle-wrapper.properties";
+exports.GradleWrapperPropertiesPathSuffix = "/gradle/wrapper/gradle-wrapper.properties";
+exports.INPUT_PROJECT_ROOT = 'project-root';
 
 
 /***/ }),

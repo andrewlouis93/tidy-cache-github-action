@@ -1,18 +1,10 @@
 import * as io from "@actions/io";
 import * as fs from 'fs'
 import * as os from 'os'
-import * as path from 'path'
-
+import * as constants from './constants';
 import * as core from "@actions/core";
 
-import {SocketTimeout} from './constants'
-
-import {HttpClient} from '@actions/http-client'
-import {IHttpClientResponse} from '@actions/http-client/interfaces'
-
-import {retryHttpClientResponse} from './requestUtils'
-
-import { GradleRepositoryPath, GradleWrapperPath, GradleWrapperPropertiesPath } from "./constants";
+import { GradleRepositoryPath, GradleWrapperPath, GradleWrapperPropertiesPathSuffix } from "./constants";
 
 import * as utils from "./actionUtils";
 
@@ -44,10 +36,12 @@ export async function prepareCleanup(): Promise<void> {
 
 export async function performCleanup(): Promise<void> {
     var timestamp = core.getState("gradle-timestamp");
+    const projectRoot = core.getInput(constants.INPUT_PROJECT_ROOT) || "." + "/";
+    const gradlePropertiesPath = `${projectRoot}${GradleWrapperPropertiesPathSuffix}`;
 
     try {
         // read contents of the file
-        const data = fs.readFileSync(GradleWrapperPropertiesPath, 'UTF-8');
+        const data = fs.readFileSync(gradlePropertiesPath, 'UTF-8');
 
         // split the contents by new line
         const lines = data.split(/\r?\n/);
@@ -90,7 +84,7 @@ export async function performCleanup(): Promise<void> {
             if(classpath) {
                 console.log("Found classpath " + classpath);
 
-                const stop = await utils.runCommand("./gradlew", ["--stop"]);
+                const stop = await utils.runCommand(`${projectRoot}/gradlew`, ["--stop"]);
 
                 const gradleDirectory = ensureGradleDirectoryExists()
                 const path = gradleDirectory + "/cleaner-1.0.0.jar";
